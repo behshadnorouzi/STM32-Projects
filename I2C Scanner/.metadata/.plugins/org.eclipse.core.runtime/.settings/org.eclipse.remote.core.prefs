@@ -1,0 +1,16 @@
+connections/org.eclipse.remote.serial.core.connectionType/ddfsdfs/serial.baudRate=11
+connections/org.eclipse.remote.serial.core.connectionType/ddfsdfs/serial.byteSize=3
+connections/org.eclipse.remote.serial.core.connectionType/ddfsdfs/serial.parity=0
+connections/org.eclipse.remote.serial.core.connectionType/ddfsdfs/serial.portName=COM12
+connections/org.eclipse.remote.serial.core.connectionType/ddfsdfs/serial.stopBits=0
+connections/org.eclipse.remote.serial.core.connectionType/i2c/serial.baudRate=11
+connections/org.eclipse.remote.serial.core.connectionType/i2c/serial.byteSize=3
+connections/org.eclipse.remote.serial.core.connectionType/i2c/serial.parity=0
+connections/org.eclipse.remote.serial.core.connectionType/i2c/serial.portName=COM12
+connections/org.eclipse.remote.serial.core.connectionType/i2c/serial.stopBits=0
+connections/org.eclipse.remote.serial.core.connectionType/i2c_scanner/serial.baudRate=11
+connections/org.eclipse.remote.serial.core.connectionType/i2c_scanner/serial.byteSize=3
+connections/org.eclipse.remote.serial.core.connectionType/i2c_scanner/serial.parity=0
+connections/org.eclipse.remote.serial.core.connectionType/i2c_scanner/serial.portName=COM12
+connections/org.eclipse.remote.serial.core.connectionType/i2c_scanner/serial.stopBits=0
+eclipse.preferences.version=1
