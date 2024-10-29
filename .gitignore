@@ -1,0 +1,18 @@
+# STM32 specific
+/build/
+*.elf
+*.bin
+*.hex
+*.map
+
+# IDE specific
+.vscode/
+.settings/
+*.launch
+*.suo
+*.user
+*.DS_Store
+
+# Temporary files
+*.swp
+*.bak
