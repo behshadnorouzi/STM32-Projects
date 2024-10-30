@@ -31,4 +31,4 @@ rad.json
 TestResults.xml
 
 # Metadata folder
-.metadata
+*.metadata
