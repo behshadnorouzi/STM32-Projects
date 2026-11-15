@@ -5,8 +5,7 @@
 #   make 03-i2c-scanner   build a single project
 #   make clean
 
-# Every folder with a Core/ directory is a CubeIDE project. (Matching on
-# *.ioc would break on "LED Blink.ioc": make splits words on spaces.)
+# Every folder with a Core/ directory is a CubeIDE project.
 PROJECTS := $(patsubst %/Core,%,$(wildcard */Core))
 
 .PHONY: all clean $(PROJECTS)
