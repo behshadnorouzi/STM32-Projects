@@ -21,7 +21,7 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-
+#include <stdio.h>
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -45,7 +45,7 @@ ADC_HandleTypeDef hadc1;
 UART_HandleTypeDef huart1;
 
 /* USER CODE BEGIN PV */
-
+static char txBuffer[32];
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -61,8 +61,6 @@ static void MX_USART1_UART_Init(void);
 /* USER CODE BEGIN 0 */
 
 /* USER CODE END 0 */
-uint32_t adcValue;
-char buffer[50];
 
 /**
   * @brief  The application entry point.
@@ -96,7 +94,11 @@ int main(void)
   MX_ADC1_Init();
   MX_USART1_UART_Init();
   /* USER CODE BEGIN 2 */
-
+  /* Calibrate once after power-up, before the first conversion (see RM0008, ADC calibration). */
+  if (HAL_ADCEx_Calibration_Start(&hadc1) != HAL_OK)
+  {
+    Error_Handler();
+  }
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -104,17 +106,18 @@ int main(void)
   while (1)
   {
     /* USER CODE END WHILE */
-      HAL_ADC_Start(&hadc1);
-      // Wait for conversion to complete
-      HAL_ADC_PollForConversion(&hadc1, HAL_MAX_DELAY);
-      // Read ADC value
-      adcValue = HAL_ADC_GetValue(&hadc1);
-      // Send ADC value to Serial Monitor
-      sprintf(buffer, "LDR Value: %lu\r\n", adcValue);
-      HAL_UART_Transmit(&huart1, (uint8_t*)buffer, strlen(buffer), HAL_MAX_DELAY);
-      HAL_Delay(100); // Delay for readability
 
     /* USER CODE BEGIN 3 */
+    HAL_ADC_Start(&hadc1);
+    if (HAL_ADC_PollForConversion(&hadc1, 10) == HAL_OK)
+    {
+      uint32_t raw = HAL_ADC_GetValue(&hadc1);  /* 12-bit, 0..4095 */
+      int len = snprintf(txBuffer, sizeof txBuffer, "LDR: %lu\r\n", (unsigned long)raw);
+      HAL_UART_Transmit(&huart1, (uint8_t *)txBuffer, (uint16_t)len, HAL_MAX_DELAY);
+    }
+    HAL_ADC_Stop(&hadc1);
+
+    HAL_Delay(100);
   }
   /* USER CODE END 3 */
 }
@@ -198,7 +201,7 @@ static void MX_ADC1_Init(void)
   */
   sConfig.Channel = ADC_CHANNEL_0;
   sConfig.Rank = ADC_REGULAR_RANK_1;
-  sConfig.SamplingTime = ADC_SAMPLETIME_1CYCLE_5;
+  sConfig.SamplingTime = ADC_SAMPLETIME_239CYCLES_5;
   if (HAL_ADC_ConfigChannel(&hadc1, &sConfig) != HAL_OK)
   {
     Error_Handler();
