@@ -21,7 +21,7 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-
+#include <string.h>
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -44,11 +44,8 @@ UART_HandleTypeDef huart1;
 
 PCD_HandleTypeDef hpcd_USB_FS;
 
-char helloMsg[] = "Hello World\r\n";
-
-
 /* USER CODE BEGIN PV */
-
+static const char helloMsg[] = "Hello World\r\n";
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -57,7 +54,7 @@ static void MX_GPIO_Init(void);
 static void MX_USART1_UART_Init(void);
 static void MX_USB_PCD_Init(void);
 /* USER CODE BEGIN PFP */
-
+static void sendMessage(const char *message);
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
@@ -69,11 +66,6 @@ static void MX_USB_PCD_Init(void);
   * @brief  The application entry point.
   * @retval int
   */
-void sendMessage(char *message); // Function prototype for sending a message
-void sendMessage(char *message) {
-    HAL_UART_Transmit(&huart1, (uint8_t*)message, strlen(message), HAL_MAX_DELAY);
-}
-
 int main(void)
 {
 
@@ -109,8 +101,8 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-	  sendMessage(helloMsg); // Send "Hello World" message
-
+    sendMessage(helloMsg);
+    HAL_Delay(1000);
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
@@ -246,7 +238,10 @@ static void MX_GPIO_Init(void)
 }
 
 /* USER CODE BEGIN 4 */
-
+static void sendMessage(const char *message)
+{
+  HAL_UART_Transmit(&huart1, (const uint8_t *)message, (uint16_t)strlen(message), HAL_MAX_DELAY);
+}
 /* USER CODE END 4 */
 
 /**
