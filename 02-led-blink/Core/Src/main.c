@@ -97,12 +97,14 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-	  HAL_GPIO_WritePin(GPIOC, GPIO_PIN_13, GPIO_PIN_RESET);
-	  HAL_Delay(1000);
     /* USER CODE END WHILE */
-	  HAL_GPIO_WritePin(GPIOC, GPIO_PIN_13, GPIO_PIN_SET);
-	  HAL_Delay(1000);
+
     /* USER CODE BEGIN 3 */
+    /* On-board LED on PC13 is active low: RESET = on, SET = off. */
+    HAL_GPIO_WritePin(LED_Blink_GPIO_Port, LED_Blink_Pin, GPIO_PIN_RESET);
+    HAL_Delay(1000);
+    HAL_GPIO_WritePin(LED_Blink_GPIO_Port, LED_Blink_Pin, GPIO_PIN_SET);
+    HAL_Delay(1000);
   }
   /* USER CODE END 3 */
 }
