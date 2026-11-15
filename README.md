@@ -1,6 +1,6 @@
 # STM32F103 Projects
 
-[![Build](https://github.com/behshadnorouzi/stm32-projects/actions/workflows/build.yml/badge.svg)](https://github.com/behshadnorouzi/stm32-projects/actions/workflows/build.yml)
+[![CI](https://github.com/behshadnorouzi/stm32-projects/actions/workflows/ci.yml/badge.svg)](https://github.com/behshadnorouzi/stm32-projects/actions/workflows/ci.yml)
 
 Small, self-contained STM32CubeIDE projects for the STM32F103C8T6 ("Blue
 Pill"), using the STM32 HAL. Each project brings up one peripheral and
