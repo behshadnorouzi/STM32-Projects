@@ -18,12 +18,11 @@
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
-#include "stdio.h"
-
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-
+#include <stdio.h>
+#include <string.h>
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -47,11 +46,7 @@ I2C_HandleTypeDef hi2c1;
 UART_HandleTypeDef huart1;
 
 /* USER CODE BEGIN PV */
-uint8_t Buffer[25] = {0};
-uint8_t Space[] = " - ";
-uint8_t StartMSG[] = "Starting I2C Scanning: \r\n";
-uint8_t EndMSG[] = "Done! \r\n\r\n";
-
+static char txBuffer[40];
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -60,7 +55,8 @@ static void MX_GPIO_Init(void);
 static void MX_I2C1_Init(void);
 static void MX_USART1_UART_Init(void);
 /* USER CODE BEGIN PFP */
-
+static void uartPrint(const char *text);
+static void scanI2CBus(void);
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
@@ -74,8 +70,6 @@ static void MX_USART1_UART_Init(void);
   */
 int main(void)
 {
-    uint8_t i = 0, ret;
-
 
   /* USER CODE BEGIN 1 */
 
@@ -102,27 +96,9 @@ int main(void)
   MX_I2C1_Init();
   MX_USART1_UART_Init();
   /* USER CODE BEGIN 2 */
-
+  HAL_Delay(1000);  /* let the slaves finish their own power-up */
+  scanI2CBus();
   /* USER CODE END 2 */
-  HAL_Delay(1000);
-
-  /*-[ I2C Bus Scanning ]-*/
-  HAL_UART_Transmit(&huart1, StartMSG, sizeof(StartMSG), 10000);
-  for(i=1; i<128; i++)
-  {
-      ret = HAL_I2C_IsDeviceReady(&hi2c1, (uint16_t)(i<<1), 3, 5);
-      if (ret != HAL_OK) /* No ACK Received At That Address */
-      {
-          HAL_UART_Transmit(&huart1, Space, sizeof(Space), 10000);
-      }
-      else if(ret == HAL_OK)
-      {
-          sprintf(Buffer, "0x%X", i);
-          HAL_UART_Transmit(&huart1, Buffer, sizeof(Buffer), 10000);
-      }
-  }
-  HAL_UART_Transmit(&huart1, EndMSG, sizeof(EndMSG), 10000);
-  /*--[ Scanning Done ]--*/
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
@@ -258,7 +234,32 @@ static void MX_GPIO_Init(void)
 }
 
 /* USER CODE BEGIN 4 */
+static void uartPrint(const char *text)
+{
+  HAL_UART_Transmit(&huart1, (const uint8_t *)text, (uint16_t)strlen(text), HAL_MAX_DELAY);
+}
 
+/* Probes every 7-bit address except 0x00 (general call) and prints the
+ * ones that acknowledge. The HAL expects the address shifted left by one. */
+static void scanI2CBus(void)
+{
+  uint8_t found = 0;
+
+  uartPrint("Scanning I2C bus...\r\n");
+
+  for (uint8_t address = 1; address < 128; address++)
+  {
+    if (HAL_I2C_IsDeviceReady(&hi2c1, (uint16_t)(address << 1), 3, 5) == HAL_OK)
+    {
+      snprintf(txBuffer, sizeof txBuffer, "  device at 0x%02X\r\n", address);
+      uartPrint(txBuffer);
+      found++;
+    }
+  }
+
+  snprintf(txBuffer, sizeof txBuffer, "Done, %u device(s) found\r\n\r\n", found);
+  uartPrint(txBuffer);
+}
 /* USER CODE END 4 */
 
 /**
