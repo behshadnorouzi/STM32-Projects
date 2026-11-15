@@ -4,6 +4,7 @@
 #   make -f project.mk PROJECT=02-led-blink
 #
 # Normally called from the top-level Makefile.
+# PROJECT must be a folder name without spaces.
 
 ifndef PROJECT
 $(error PROJECT is not set, e.g. make -f project.mk PROJECT=02-led-blink)
